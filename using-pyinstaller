@@ -1,0 +1,14 @@
+To make pyinstaller work correctly, use the -F and --windowed flags:
+
+pyinstaller animal.gui.py -F --windowed
+
+-F condenses everything into one executable file --windowed hides the
+terminal output window.
+
+The output will be in a folder called dist. You need to copy the .glade
+file into the dist folder. Also copy any other resources that the program
+uses, like pictures.
+
+To complete the installation, we will need to make a windows script hat
+makes a link to the executable so that the users do not need to poke
+around in the dest folder.
