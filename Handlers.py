@@ -13,6 +13,8 @@ from gi.repository import Gtk
 from FileChooser import FileChooser
 from AnimalSorter import sortAnimalsIntoFolders
 
+import time
+
 
 class Handlers():
 	def __init__(self, source_text_field, destination_text_field):
@@ -42,6 +44,7 @@ class Handlers():
 	#message.
 	def button_run_clicked(self, button):
 		print("Run button clicked!")
+		startTime = time.time()
 		sourceStr = self.source_text_field.get_text()
 		destStr = self.destination_text_field.get_text()
 		if sourceStr == "":
@@ -54,3 +57,5 @@ class Handlers():
 			print("Sorting...")
 			sortAnimalsIntoFolders(sourceStr, destStr)
 			print("Done!")
+		endTime = time.time()
+		print("That took: " + str(endTime - startTime) + " seconds.")

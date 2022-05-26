@@ -47,6 +47,9 @@ def main(args):
 	# ~ print("loading keras loss...")
 	# ~ from keras.losses import SparseCategoricalCrossentropy
 	
+	# ~ print("Loading tensorflow...")
+	# ~ import tensorflow
+	
 	print("loading file window...")
 	from FileSelectWindow import FileSelectWindow
 	

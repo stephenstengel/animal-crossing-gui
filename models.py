@@ -13,6 +13,11 @@ from keras.layers import MaxPooling2D, Flatten, Dense, Dropout, GlobalAveragePoo
 from keras.losses import SparseCategoricalCrossentropy
 
 
+#So I only have to change it here
+def currentBestModel(shapeTupple):
+	return inceptionResNetModel(shapeTupple)
+
+
 def inceptionResNetModel(shapeTupple):
     base_model = InceptionResNetV2(
 		weights='imagenet',
