@@ -5,7 +5,7 @@
   <object class="GtkWindow" id="file_select_window">
     <property name="can-focus">False</property>
     <child>
-      <!-- n-columns=3 n-rows=4 -->
+      <!-- n-columns=3 n-rows=5 -->
       <object class="GtkGrid">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
@@ -81,6 +81,17 @@
           <packing>
             <property name="left-attach">0</property>
             <property name="top-attach">3</property>
+            <property name="width">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSpinner" id="progress_spinner">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+          </object>
+          <packing>
+            <property name="left-attach">0</property>
+            <property name="top-attach">4</property>
             <property name="width">3</property>
           </packing>
         </child>

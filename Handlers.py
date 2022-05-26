@@ -17,9 +17,10 @@ import time
 
 
 class Handlers():
-	def __init__(self, source_text_field, destination_text_field):
+	def __init__(self, source_text_field, destination_text_field, progress_spinner):
 		self.source_text_field = source_text_field
 		self.destination_text_field = destination_text_field
+		self.progress_spinner = progress_spinner
 	
 	def button_source_onclick(self, button):
 		print("Source button clicked!")
@@ -55,7 +56,9 @@ class Handlers():
 			print("\a")
 		else:
 			print("Sorting...")
+			self.progress_spinner.start()
 			sortAnimalsIntoFolders(sourceStr, destStr)
 			print("Done!")
+			self.progress_spinner.stop()
 		endTime = time.time()
 		print("That took: " + str(endTime - startTime) + " seconds.")

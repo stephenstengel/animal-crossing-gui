@@ -13,6 +13,9 @@ import os
 import shutil
 import tensorflow as tf
 import time
+from skimage.io import imsave
+from skimage.util import img_as_ubyte, img_as_float
+import numpy as np
 
 from models import currentBestModel
 
@@ -94,13 +97,19 @@ def sortAnimalsIntoFolders(sourceStr, destStr):
 	
 	#Turn the input images into a dataset?
 	print("Loading the dataset...")
-	images_ds = createDatasetFromImages(sourceStr)
+	images_ds, originalFullNames = createDatasetFromImages(sourceStr)
+	
+	#normalize file paths for all operating systems
+	originalFullNames = normalizeAllNames(originalFullNames)
+	
+	#strip base path from original names
+	originalNames = stripBasepathFromFilenames(originalFullNames)
 	
 
 	#It might be faster to load the model and weights separately. need testing.
 	print("Loading model...")
 	# ~ print("COMENTED OUT FOR TESTING!")
-	theModel = tf.keras.models.load_model(CHECKPOINT_FOLDER )
+	theModel = tf.keras.models.load_model(CHECKPOINT_FOLDER)
 	theModel.summary()
 	
 	#Get a list of predictions
@@ -109,16 +118,55 @@ def sortAnimalsIntoFolders(sourceStr, destStr):
 	predictionsArray = theModel.predict( \
 			images_ds,
 			verbose = 2, #shows a line? If we can print this to file, we can use it to inform our status bar.
-			steps = 1, #only predict 1 batch of 32 pictures to test faster.
+			steps = 2, #only predict two batches of 32 pictures to test faster.
 			)
 	elapsedTime = time.time() - startTime
 	print(str(predictionsArray))
 	print("Prediction took: " + str(elapsedTime) + " seconds.")
 	
 	#For each prediction, put image into correct folder.
-	# ~ sortPredictions(images_ds, predictionsArray, destStr, CLASS_NAMES_LIST_INT, CLASS_NAMES_LIST_STR)
+	# ~ sortPredictions(images_ds, predictionsArray, sourceStr, destStr, CLASS_NAMES_LIST_INT, CLASS_NAMES_LIST_STR)
+	
+	copyPredictions(originalFullNames, originalNames, predictionsArray, destStr, CLASS_NAMES_LIST_INT, CLASS_NAMES_LIST_STR)
 	
 	print("Done!")
+
+
+
+def normalizeAllNames(originalFullNames):
+	outList = []
+	for name in originalFullNames:
+		outList.append( os.path.normpath(name) )
+	
+	return outList
+
+
+
+def copyPredictions(originalFullNames, originalNames, predictionsArray, destStr, classNamesListInt, classNamesListStr):
+	#Get predicted labels in integer form.
+	labelsListInt = getPredictedLabels(predictionsArray)
+	
+	#get all predicted labels in string form for use as output folders
+	labelsListStr = getAllOutFoldersStr(classNamesListStr, labelsListInt)
+	
+	for i in range(len(predictionsArray)):
+		thisOutClassFolder = labelsListStr[i] #get this out folder
+		thisOutName = originalNames[i]
+		
+		#get full path of output name
+		thisOutputFolder = os.path.join(destStr, thisOutClassFolder)
+		
+		#copy original to destination
+		thisFullOriginalName = originalFullNames[i]
+		
+		try:
+			shutil.copy2( thisFullOriginalName, thisOutputFolder)
+		except:
+			print("copy skipping: " + str(thisName))
+
+
+
+
 
 
 
@@ -148,7 +196,23 @@ def createDatasetFromImages(sourceFolderStr):
 			shuffle = False,
 			interpolation = "bilinear", #default is bilinear
 			)
-	return out_ds
+	
+	
+	# Found undocumented filename return lol
+	# https://stackoverflow.com/questions/62166588/how-to-obtain-filenames-during-prediction-while-using-tf-keras-preprocessing-ima
+	# ~ fnames = out_ds.file_paths
+	# ~ for name in fnames:
+		# ~ print(name)
+		
+		
+	outNames = out_ds.file_paths
+	
+	AUTOTUNE = tf.data.AUTOTUNE
+	normalization_layer = tf.keras.layers.Rescaling(1./255) #for newer versions of tensorflow
+	out_ds = out_ds.map(lambda x: normalization_layer(x),  num_parallel_calls=AUTOTUNE)
+	
+	
+	return out_ds, outNames
 
 
 
@@ -177,5 +241,73 @@ def deleteDirectories(listDirsToDelete):
 
 
 
+#Need to preserve filenames with os.walk (thats how tensorflow loads them when not shuffled.)
+#Investigate! Make sure that the images have the right names when they come out! A small class like weasel should be good for that.
+def sortPredictions(images_ds, predictionsArray, sourceStr, destStr, classNamesListInt, classNamesListStr):
+	
+	#Get list of predictions in int form
+	labelsListInt = getPredictedLabels(predictionsArray)
+
+	#get list of output names given the input names using os.walk (without a base path)
+	outNamesList = getListOfFilenames(sourceStr)
+	
+	#Put images in the correct places.
+	i = 0
+	for batch in images_ds:
+		batchArr = np.asarray(batch) 
+		while batchArr is not None: #HUHUHUHU
+			for j in range(len(batchArr)):
+				thisImg = img_as_ubyte( batchArr[j] )
+				thisFolderStr = getOutFolderNameStr(classNamesListStr, labelsListInt[i])
+				thisFileName = outNamesList[i]
+				fnameStr = os.path.join(destStr, thisFolderStr, thisFileName)
+				imsave(fnameStr, thisImg)
+				i += 1
+	
+	# ~ for i in range(len(images_ds)):
+		
+	
+	#could we do for i in range len(_ds) * batch_size .. for j in range len (_ds)??
 
 
+def getAllOutFoldersStr(classNamesListStr, labelsListInt):
+	outFoldersList = []
+	for labelInt in labelsListInt:
+		outFoldersList.append( getOutFolderNameStr(classNamesListStr, labelInt ) )
+	
+	return outFoldersList
+
+def getOutFolderNameStr(classNamesListStr, classInt):
+	return classNamesListStr[ classInt ]
+
+
+
+#Returns a list of filenames from the input directory
+#uses os.walk, so it should be the same order as tensorflow loads them!!!!!!!!!!!!!!!!!!!!!!!!!!!maybe
+#Currently not getting the same filenames as tensorflow  :(
+def getListOfFilenames(baseDirectory, include_base = False):
+	myNames = []
+	for (root, dirNames, fileNames) in os.walk(baseDirectory):
+		for aFile in  fileNames:
+			if include_base:
+				myNames.append( os.path.join( root, aFile ) )
+			else:
+				myNames.append(aFile)
+	
+	return myNames
+
+def stripBasepathFromFilenames(inList):
+	outList = []
+	for name in inList:
+		outList.append( os.path.basename(name) )
+
+	return outList
+
+
+#Transform scores array into predicted labels.
+def getPredictedLabels(predictedScores):
+	outList = []
+	for score in predictedScores:
+		outList.append(np.argmax(score))
+	
+	return np.asarray(outList)
