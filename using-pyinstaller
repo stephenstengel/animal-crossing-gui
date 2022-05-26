@@ -1,14 +1,21 @@
-To make pyinstaller work correctly, use the -F and --windowed flags:
+To make pyinstaller work correctly, use the --windowed flag:
 
-pyinstaller animal.gui.py -F --windowed
+pyinstaller animal-gui.py FileChooser.py FileSelectWindow.py Handlers.py  --windowed
 
--F condenses everything into one executable file --windowed hides the
-terminal output window.
+Each script needs to be named so that it can create the import files from each of them.
 
-The output will be in a folder called dist. You need to copy the .glade
-file into the dist folder. Also copy any other resources that the program
-uses, like pictures.
+--windowed 
+	hides the terminal output window.
 
-To complete the installation, we will need to make a windows script hat
+-F
+	Converts everything into one exe file, but makes the program take a
+	long time to load because it has to extract all the files to a
+	temporary folder. This takes especially long on windows.
+
+The output will be a folder named animal-gui in a folder called dist.
+You need to copy the .glade file into the dist/animal-gui/ folder. Also
+copy any other resources that the program uses, like pictures.
+
+To complete the installation, we will need to make a windows script that
 makes a link to the executable so that the users do not need to poke
-around in the dest folder.
+around in the installation folder.
