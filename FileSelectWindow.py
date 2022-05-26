@@ -26,7 +26,6 @@ class FileSelectWindow(Gtk.Window):
 		run_button = builder.get_object("run_button")
 		source_text_field = builder.get_object("source_text_field")
 		destination_text_field = builder.get_object("destination_text_field")
-		progress_spinner = builder.get_object("progress_spinner")
 		progress_bar = builder.get_object("progress_bar")
 		
 		
@@ -34,7 +33,7 @@ class FileSelectWindow(Gtk.Window):
 		window.connect("destroy", Gtk.main_quit)
 		window.connect("destroy", Handlers.myDestroy)
 
-		myHandlers = Handlers(source_text_field, destination_text_field, progress_spinner, progress_bar, run_button)
+		myHandlers = Handlers(source_text_field, destination_text_field, progress_bar, run_button)
 		builder.connect_signals(myHandlers)
 		
 		window.show_all()

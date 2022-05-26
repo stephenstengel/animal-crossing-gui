@@ -11,7 +11,6 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GLib
 
 from FileChooser import FileChooser
-from AnimalSorter import sortAnimalsIntoFolders
 
 import time
 import multiprocessing
@@ -29,12 +28,10 @@ class Handlers():
 	def __init__(self, 
 			source_text_field, 
 			destination_text_field, 
-			progress_spinner, 
 			progress_bar,
 			run_button):
 		self.source_text_field = source_text_field
 		self.destination_text_field = destination_text_field
-		self.progress_spinner = progress_spinner
 		self.progress_bar = progress_bar
 		self.run_button = run_button
 	
@@ -71,6 +68,7 @@ class Handlers():
 			print("DEST STRING NULL!")
 			print("\a")
 		elif self.sortingProcess is None:
+			from AnimalSorter import sortAnimalsIntoFolders #import lol
 			print("Sorting...")
 			self.sortingProcess = multiprocessing.Process(target=sortAnimalsIntoFolders, args=(sourceStr, destStr, self.progress_bar,))
 			global globalSortingProcess
@@ -81,7 +79,6 @@ class Handlers():
 			self.progress_bar.pulse()
 			self.progress_bar.set_text("Processing...")
 			self.progress_bar.set_show_text(True)
-			self.progress_spinner.start()
 			self.run_button.set_sensitive(False)
 			
 		endTime = time.time()

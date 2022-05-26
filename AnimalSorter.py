@@ -10,12 +10,7 @@
 
 
 import os
-import shutil
-import tensorflow as tf
-import time
-from skimage.io import imsave
-from skimage.util import img_as_ubyte, img_as_float
-import numpy as np
+
 
 # ~ from models import currentBestModel
 
@@ -74,14 +69,14 @@ def sortAnimalsIntoFolders(sourceStr, destStr, progress_bar):
 	print("Source dir: " + str(sourceStr))
 	print("Destenation dir: " + str(destStr))
 	
-	progress_bar.pulse()
+	
 	
 	#create the folder structure within the destination directory.
 	print("Setting up output directories...")
 	foldersToCreate = createOutputFoldernames(CLASS_NAMES_LIST_STR, destStr)
 	makeDirectories(foldersToCreate)
 	
-	progress_bar.pulse()
+	
 	
 	#Load the model from models.py. This is currently blocking the gui. (can't update window till done)
 	#maybe this should be a part of the splash screen step?
@@ -103,7 +98,7 @@ def sortAnimalsIntoFolders(sourceStr, destStr, progress_bar):
 	print("Loading the dataset...")
 	images_ds, originalFullNames = createDatasetFromImages(sourceStr)
 	
-	progress_bar.pulse()
+	
 	
 	#normalize file paths for all operating systems
 	originalFullNames = normalizeAllNames(originalFullNames)
@@ -111,18 +106,20 @@ def sortAnimalsIntoFolders(sourceStr, destStr, progress_bar):
 	#strip base path from original names
 	originalNames = stripBasepathFromFilenames(originalFullNames)
 	
-	progress_bar.pulse()
+	
 
 	#It might be faster to load the model and weights separately. need testing.
 	print("Loading model...")
 	# ~ print("COMENTED OUT FOR TESTING!")
-	theModel = tf.keras.models.load_model(CHECKPOINT_FOLDER)
+	from tensorflow.keras.models import load_model
+	theModel = load_model(CHECKPOINT_FOLDER)
 	theModel.summary()
 	
-	progress_bar.pulse()
+	
 	
 	#Get a list of predictions
 	print("Making predictions...")
+	import time
 	startTime = time.time()
 	predictionsArray = theModel.predict( \
 			images_ds,
@@ -133,14 +130,14 @@ def sortAnimalsIntoFolders(sourceStr, destStr, progress_bar):
 	print(str(predictionsArray))
 	print("Prediction took: " + str(elapsedTime) + " seconds.")
 	
-	progress_bar.pulse()
+	
 	
 	#For each prediction, put image into correct folder.
 	# ~ sortPredictions(images_ds, predictionsArray, sourceStr, destStr, CLASS_NAMES_LIST_INT, CLASS_NAMES_LIST_STR)
 	
 	copyPredictions(originalFullNames, originalNames, predictionsArray, destStr, CLASS_NAMES_LIST_INT, CLASS_NAMES_LIST_STR)
 	
-	progress_bar.pulse()
+	
 	
 	print("Done!")
 
@@ -156,6 +153,7 @@ def normalizeAllNames(originalFullNames):
 
 
 def copyPredictions(originalFullNames, originalNames, predictionsArray, destStr, classNamesListInt, classNamesListStr):
+	import shutil
 	#Get predicted labels in integer form.
 	labelsListInt = getPredictedLabels(predictionsArray)
 	
@@ -199,7 +197,8 @@ def copyPredictions(originalFullNames, originalNames, predictionsArray, destStr,
 #then predict on each image in the array and sort, then continue with
 #the rest of the dataset in this way.
 def createDatasetFromImages(sourceFolderStr):
-	out_ds = tf.keras.preprocessing.image_dataset_from_directory( \
+	from tensorflow.keras.preprocessing import image_dataset_from_directory
+	out_ds = image_dataset_from_directory( \
 			sourceFolderStr,
 			labels = None,
 			label_mode = None,
@@ -220,8 +219,10 @@ def createDatasetFromImages(sourceFolderStr):
 		
 	outNames = out_ds.file_paths
 	
-	AUTOTUNE = tf.data.AUTOTUNE
-	normalization_layer = tf.keras.layers.Rescaling(1./255) #for newer versions of tensorflow
+	from tensorflow import data
+	AUTOTUNE = data.AUTOTUNE
+	from tensorflow.keras.layers import Rescaling
+	normalization_layer = Rescaling(1./255) #for newer versions of tensorflow
 	out_ds = out_ds.map(lambda x: normalization_layer(x),  num_parallel_calls=AUTOTUNE)
 	
 	
@@ -248,6 +249,7 @@ def makeDirectories(listOfFoldersToCreate):
 
 #deletes each dir within a list
 def deleteDirectories(listDirsToDelete):
+	import shutil
 	for folder in listDirsToDelete:
 		if os.path.isdir(folder):
 			shutil.rmtree(folder, ignore_errors = True)	
@@ -257,6 +259,10 @@ def deleteDirectories(listDirsToDelete):
 #Need to preserve filenames with os.walk (thats how tensorflow loads them when not shuffled.)
 #Investigate! Make sure that the images have the right names when they come out! A small class like weasel should be good for that.
 def sortPredictions(images_ds, predictionsArray, sourceStr, destStr, classNamesListInt, classNamesListStr):
+	
+	from skimage.io import imsave
+	from skimage.util import img_as_ubyte
+	import numpy as np
 	
 	#Get list of predictions in int form
 	labelsListInt = getPredictedLabels(predictionsArray)
@@ -319,6 +325,7 @@ def stripBasepathFromFilenames(inList):
 
 #Transform scores array into predicted labels.
 def getPredictedLabels(predictedScores):
+	import numpy as np
 	outList = []
 	for score in predictedScores:
 		outList.append(np.argmax(score))

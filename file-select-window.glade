@@ -4,6 +4,8 @@
   <requires lib="gtk+" version="3.24"/>
   <object class="GtkWindow" id="file_select_window">
     <property name="can-focus">False</property>
+    <property name="border-width">4</property>
+    <property name="default-width">1000</property>
     <child>
       <!-- n-columns=3 n-rows=5 -->
       <object class="GtkGrid">
@@ -21,7 +23,7 @@
           </object>
           <packing>
             <property name="left-attach">2</property>
-            <property name="top-attach">0</property>
+            <property name="top-attach">1</property>
           </packing>
         </child>
         <child>
@@ -34,18 +36,7 @@
           </object>
           <packing>
             <property name="left-attach">2</property>
-            <property name="top-attach">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkEntry" id="source_text_field">
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-          </object>
-          <packing>
-            <property name="left-attach">0</property>
-            <property name="top-attach">0</property>
-            <property name="width">2</property>
+            <property name="top-attach">2</property>
           </packing>
         </child>
         <child>
@@ -55,7 +46,7 @@
           </object>
           <packing>
             <property name="left-attach">0</property>
-            <property name="top-attach">1</property>
+            <property name="top-attach">2</property>
             <property name="width">2</property>
           </packing>
         </child>
@@ -69,7 +60,7 @@
           </object>
           <packing>
             <property name="left-attach">0</property>
-            <property name="top-attach">2</property>
+            <property name="top-attach">3</property>
             <property name="width">3</property>
           </packing>
         </child>
@@ -80,21 +71,23 @@
           </object>
           <packing>
             <property name="left-attach">0</property>
-            <property name="top-attach">3</property>
+            <property name="top-attach">4</property>
             <property name="width">3</property>
           </packing>
         </child>
         <child>
-          <object class="GtkSpinner" id="progress_spinner">
+          <object class="GtkEntry" id="source_text_field">
             <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="active">True</property>
+            <property name="can-focus">True</property>
           </object>
           <packing>
             <property name="left-attach">0</property>
-            <property name="top-attach">4</property>
-            <property name="width">3</property>
+            <property name="top-attach">1</property>
+            <property name="width">2</property>
           </packing>
+        </child>
+        <child>
+          <placeholder/>
         </child>
       </object>
     </child>
