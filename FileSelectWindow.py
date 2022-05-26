@@ -32,6 +32,7 @@ class FileSelectWindow(Gtk.Window):
 		
 		window = builder.get_object("file_select_window")
 		window.connect("destroy", Gtk.main_quit)
+		window.connect("destroy", Handlers.myDestroy)
 
 		myHandlers = Handlers(source_text_field, destination_text_field, progress_spinner, progress_bar)
 		builder.connect_signals(myHandlers)

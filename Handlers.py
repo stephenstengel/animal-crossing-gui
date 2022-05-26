@@ -17,6 +17,10 @@ import time
 import multiprocessing
 
 
+#global variable to kill a sorting process if the user clicks the exit button.
+globalSortingProcess = None
+
+
 class Handlers():
 	isSortingHappening = False
 	sortingProcess = None
@@ -59,10 +63,12 @@ class Handlers():
 		elif destStr == "":
 			print("DEST STRING NULL!")
 			print("\a")
-		else:
+		elif self.sortingProcess is None:
 			print("Sorting...")
 			self.progress_spinner.start()
 			self.sortingProcess = multiprocessing.Process(target=sortAnimalsIntoFolders, args=(sourceStr, destStr, self.progress_bar,))
+			global globalSortingProcess
+			globalSortingProcess = self.sortingProcess ## Tre grava amikoj! Always update together
 			self.sortingProcess.start()
 			
 			# ~ sortAnimalsIntoFolders(sourceStr, destStr, self.progress_bar)
@@ -70,3 +76,12 @@ class Handlers():
 			# ~ self.progress_spinner.stop()
 		endTime = time.time()
 		print("That took: " + str(endTime - startTime) + " seconds.")
+
+
+	def myDestroy(self):
+		global globalSortingProcess
+		if globalSortingProcess is not None:
+			if globalSortingProcess.is_alive():
+				globalSortingProcess.terminate()
+		
+	

@@ -22,6 +22,24 @@ Example usage of some of the methods of Process:
 
 
 
+#from my hello-world project:
+		window = builder.get_object("myWindow")
+		window.connect("destroy", Handlers.myDestroy)
+		window.connect("destroy", Gtk.main_quit)
+		
+			#This is used to stop the music from playing if the user closes the window during playback.
+	def myDestroy(self):
+		print("Exit window button pressed!")
+		global exitProcess
+		if exitProcess is not None:
+			print("Killing this process: " + str(exitProcess.pid))
+			kill(exitProcess.pid, signal.SIGKILL)
+
+
+
+
+This is not usefull to me:
+
 https://stackoverflow.com/questions/19033818/how-to-call-a-function-on-a-running-python-thread
 from multiprocessing import dummy as multithreading
 
