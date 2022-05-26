@@ -17,7 +17,7 @@ from skimage.io import imsave
 from skimage.util import img_as_ubyte, img_as_float
 import numpy as np
 
-from models import currentBestModel
+# ~ from models import currentBestModel
 
 
 #Current plan:
@@ -69,15 +69,19 @@ PRESENT_DIRECTORY = os.path.normpath(os.path.dirname(__file__) )
 print("Present directory: " + PRESENT_DIRECTORY)
 
 
-def sortAnimalsIntoFolders(sourceStr, destStr):
+def sortAnimalsIntoFolders(sourceStr, destStr, progress_bar):
 	print("Testing! WOW!")
 	print("Source dir: " + str(sourceStr))
 	print("Destenation dir: " + str(destStr))
+	
+	progress_bar.pulse()
 	
 	#create the folder structure within the destination directory.
 	print("Setting up output directories...")
 	foldersToCreate = createOutputFoldernames(CLASS_NAMES_LIST_STR, destStr)
 	makeDirectories(foldersToCreate)
+	
+	progress_bar.pulse()
 	
 	#Load the model from models.py. This is currently blocking the gui. (can't update window till done)
 	#maybe this should be a part of the splash screen step?
@@ -99,18 +103,23 @@ def sortAnimalsIntoFolders(sourceStr, destStr):
 	print("Loading the dataset...")
 	images_ds, originalFullNames = createDatasetFromImages(sourceStr)
 	
+	progress_bar.pulse()
+	
 	#normalize file paths for all operating systems
 	originalFullNames = normalizeAllNames(originalFullNames)
 	
 	#strip base path from original names
 	originalNames = stripBasepathFromFilenames(originalFullNames)
 	
+	progress_bar.pulse()
 
 	#It might be faster to load the model and weights separately. need testing.
 	print("Loading model...")
 	# ~ print("COMENTED OUT FOR TESTING!")
 	theModel = tf.keras.models.load_model(CHECKPOINT_FOLDER)
 	theModel.summary()
+	
+	progress_bar.pulse()
 	
 	#Get a list of predictions
 	print("Making predictions...")
@@ -124,10 +133,14 @@ def sortAnimalsIntoFolders(sourceStr, destStr):
 	print(str(predictionsArray))
 	print("Prediction took: " + str(elapsedTime) + " seconds.")
 	
+	progress_bar.pulse()
+	
 	#For each prediction, put image into correct folder.
 	# ~ sortPredictions(images_ds, predictionsArray, sourceStr, destStr, CLASS_NAMES_LIST_INT, CLASS_NAMES_LIST_STR)
 	
 	copyPredictions(originalFullNames, originalNames, predictionsArray, destStr, CLASS_NAMES_LIST_INT, CLASS_NAMES_LIST_STR)
+	
+	progress_bar.pulse()
 	
 	print("Done!")
 

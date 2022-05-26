@@ -14,13 +14,18 @@ from FileChooser import FileChooser
 from AnimalSorter import sortAnimalsIntoFolders
 
 import time
+import multiprocessing
 
 
 class Handlers():
-	def __init__(self, source_text_field, destination_text_field, progress_spinner):
+	isSortingHappening = False
+	sortingProcess = None
+	
+	def __init__(self, source_text_field, destination_text_field, progress_spinner, progress_bar):
 		self.source_text_field = source_text_field
 		self.destination_text_field = destination_text_field
 		self.progress_spinner = progress_spinner
+		self.progress_bar = progress_bar
 	
 	def button_source_onclick(self, button):
 		print("Source button clicked!")
@@ -57,8 +62,11 @@ class Handlers():
 		else:
 			print("Sorting...")
 			self.progress_spinner.start()
-			sortAnimalsIntoFolders(sourceStr, destStr)
-			print("Done!")
-			self.progress_spinner.stop()
+			self.sortingProcess = multiprocessing.Process(target=sortAnimalsIntoFolders, args=(sourceStr, destStr, self.progress_bar,))
+			self.sortingProcess.start()
+			
+			# ~ sortAnimalsIntoFolders(sourceStr, destStr, self.progress_bar)
+			# ~ print("Done!")
+			# ~ self.progress_spinner.stop()
 		endTime = time.time()
 		print("That took: " + str(endTime - startTime) + " seconds.")

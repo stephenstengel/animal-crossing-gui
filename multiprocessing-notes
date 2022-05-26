@@ -1,0 +1,40 @@
+I think I'll spawn a process with multiprocessing.Process,
+then make a timer to periodically check if it has finished.
+When it does, reactivate the run button and stop the progressbar / spinner.
+
+
+https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Process.close
+Example usage of some of the methods of Process:
+
+ >>> import multiprocessing, time, signal
+ >>> p = multiprocessing.Process(target=time.sleep, args=(1000,))
+ >>> print(p, p.is_alive())
+ <Process ... initial> False
+ >>> p.start()
+ >>> print(p, p.is_alive())
+ <Process ... started> True
+ >>> p.terminate()
+ >>> time.sleep(0.1)
+ >>> print(p, p.is_alive())
+ <Process ... stopped exitcode=-SIGTERM> False
+ >>> p.exitcode == -signal.SIGTERM
+ True
+
+
+
+https://stackoverflow.com/questions/19033818/how-to-call-a-function-on-a-running-python-thread
+from multiprocessing import dummy as multithreading
+
+class SomeClass(object):
+    def doSomething(self):
+        pass
+    def doSomethingElse(self):
+        pass
+
+someClass = SomeClass()
+pool = multithreading.Pool(1)
+pool.apply(someClass.doSomething)
+pool.apply(someClass.doSomethingElse)
+pool.apply(someClass.doSomething)
+pool.close()
+pool.join()
