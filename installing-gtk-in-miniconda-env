@@ -1,0 +1,5 @@
+To get gtk working in a conda environment:
+conda install -c conda-forge gtk3
+also install pygobject and  pycairo in this way.
+pycairo should be automatically installed when you install pygobject, but check to make sure.
+

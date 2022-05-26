@@ -11,6 +11,7 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 
 from FileChooser import FileChooser
+from AnimalSorter import sortAnimalsIntoFolders
 
 
 class Handlers():
@@ -33,6 +34,23 @@ class Handlers():
 		print("Selected folder: " + str(pathString))
 		if pathString is not None:
 			self.destination_text_field.set_text(pathString)
-		
+	
+	
+	#Need to add a check to make sure fields are not empty
+	#maybe here, maybe in the sorter. Here makes sense because this can
+	#get called over and over automatically. And make a popup error
+	#message.
 	def button_run_clicked(self, button):
 		print("Run button clicked!")
+		sourceStr = self.source_text_field.get_text()
+		destStr = self.destination_text_field.get_text()
+		if sourceStr == "":
+			print("SOURCE STRING NULL!")
+			print("\a")
+		elif destStr == "":
+			print("DEST STRING NULL!")
+			print("\a")
+		else:
+			print("Sorting...")
+			sortAnimalsIntoFolders(sourceStr, destStr)
+			print("Done!")
