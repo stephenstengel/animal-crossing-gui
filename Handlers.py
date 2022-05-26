@@ -68,7 +68,7 @@ class Handlers():
 		elif self.sortingProcess is None:
 			from AnimalSorter import sortAnimalsIntoFolders #import lol
 			print("Sorting...")
-			self.sortingProcess = multiprocessing.Process(target=sortAnimalsIntoFolders, args=(sourceStr, destStr, self.progress_bar,))
+			self.sortingProcess = multiprocessing.Process(target=sortAnimalsIntoFolders, args=(sourceStr, destStr,))
 			global globalSortingProcess
 			globalSortingProcess = self.sortingProcess ## Tre grava amikoj! Always update together
 			

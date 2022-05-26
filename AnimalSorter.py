@@ -64,7 +64,7 @@ PRESENT_DIRECTORY = os.path.normpath(os.path.dirname(__file__) )
 print("Present directory: " + PRESENT_DIRECTORY)
 
 
-def sortAnimalsIntoFolders(sourceStr, destStr, progress_bar):
+def sortAnimalsIntoFolders(sourceStr, destStr):
 	import time
 	print("Source dir: " + str(sourceStr))
 	print("Destenation dir: " + str(destStr))
