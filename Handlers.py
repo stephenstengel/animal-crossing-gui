@@ -75,12 +75,14 @@ class Handlers():
 			self.sortingProcess = multiprocessing.Process(target=sortAnimalsIntoFolders, args=(sourceStr, destStr, self.progress_bar,))
 			global globalSortingProcess
 			globalSortingProcess = self.sortingProcess ## Tre grava amikoj! Always update together
+			
 			self.sortingProcess.start()
 			self.start_timer()
 			self.progress_bar.pulse()
+			self.progress_bar.set_text("Processing...")
+			self.progress_bar.set_show_text(True)
 			self.progress_spinner.start()
 			self.run_button.set_sensitive(False)
-			self.progress_bar.set_text("Processing...")
 			
 		endTime = time.time()
 		print("That took: " + str(endTime - startTime) + " seconds.")
@@ -113,12 +115,17 @@ class Handlers():
 				else:
 					self.stop_timer()
 				
-					#erase the progress bar?
+					#reset the progress bar?
 					self.progress_bar.set_fraction(0.0)
 					self.progress_bar.set_text("Done!")
+					self.progress_bar.set_show_text(True)
 					
 					#Set the run button back to clickable
 					self.run_button.set_sensitive(True)
+					
+					self.sortingProcess = None
+					global globalSortingProcess
+					globalSortingProcess = self.sortingProcess #always update together.
 				
 			return True
 		else:
