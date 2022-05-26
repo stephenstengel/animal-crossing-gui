@@ -65,18 +65,14 @@ print("Present directory: " + PRESENT_DIRECTORY)
 
 
 def sortAnimalsIntoFolders(sourceStr, destStr, progress_bar):
-	print("Testing! WOW!")
+	import time
 	print("Source dir: " + str(sourceStr))
 	print("Destenation dir: " + str(destStr))
-	
-	
 	
 	#create the folder structure within the destination directory.
 	print("Setting up output directories...")
 	foldersToCreate = createOutputFoldernames(CLASS_NAMES_LIST_STR, destStr)
 	makeDirectories(foldersToCreate)
-	
-	
 	
 	#Load the model from models.py. This is currently blocking the gui. (can't update window till done)
 	#maybe this should be a part of the splash screen step?
@@ -93,12 +89,9 @@ def sortAnimalsIntoFolders(sourceStr, destStr, progress_bar):
 	# ~ theModel.load_weights(os.path.abspath(CHECKPOINT_FOLDER))
 	
 	
-	
 	#Turn the input images into a dataset?
 	print("Loading the dataset...")
 	images_ds, originalFullNames = createDatasetFromImages(sourceStr)
-	
-	
 	
 	#normalize file paths for all operating systems
 	originalFullNames = normalizeAllNames(originalFullNames)
@@ -109,36 +102,31 @@ def sortAnimalsIntoFolders(sourceStr, destStr, progress_bar):
 	
 
 	#It might be faster to load the model and weights separately. need testing.
+	startModelLoadTime = time.time()
 	print("Loading model...")
 	# ~ print("COMENTED OUT FOR TESTING!")
 	from tensorflow.keras.models import load_model
 	theModel = load_model(CHECKPOINT_FOLDER)
 	theModel.summary()
-	
+	mLoadElapsed = time.time() - startModelLoadTime
+	print("Loading model complete in: " + str(mLoadElapsed) + " seconds.")
 	
 	
 	#Get a list of predictions
 	print("Making predictions...")
-	import time
 	startTime = time.time()
 	predictionsArray = theModel.predict( \
 			images_ds,
-			verbose = 2, #shows a line? If we can print this to file, we can use it to inform our status bar.
-			steps = 2, #only predict two batches of 32 pictures to test faster.
+			verbose = 1,
+			# ~ steps = 2, #only predict two batches of 32 pictures to test faster.
 			)
 	elapsedTime = time.time() - startTime
 	print(str(predictionsArray))
 	print("Prediction took: " + str(elapsedTime) + " seconds.")
 	
 	
-	
-	#For each prediction, put image into correct folder.
-	# ~ sortPredictions(images_ds, predictionsArray, sourceStr, destStr, CLASS_NAMES_LIST_INT, CLASS_NAMES_LIST_STR)
-	
+	print("Copying files...")
 	copyPredictions(originalFullNames, originalNames, predictionsArray, destStr, CLASS_NAMES_LIST_INT, CLASS_NAMES_LIST_STR)
-	
-	
-	
 	print("Done!")
 
 

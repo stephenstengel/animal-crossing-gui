@@ -12,7 +12,6 @@ from gi.repository import Gtk, GLib
 
 from FileChooser import FileChooser
 
-import time
 import multiprocessing
 
 
@@ -58,7 +57,6 @@ class Handlers():
 	#message.
 	def button_run_clicked(self, button):
 		print("Run button clicked!")
-		startTime = time.time()
 		sourceStr = self.source_text_field.get_text()
 		destStr = self.destination_text_field.get_text()
 		if sourceStr == "":
@@ -81,9 +79,6 @@ class Handlers():
 			self.progress_bar.set_show_text(True)
 			self.run_button.set_sensitive(False)
 			
-		endTime = time.time()
-		print("That took: " + str(endTime - startTime) + " seconds.")
-
 
 	def myDestroy(self):
 		global globalSortingProcess
