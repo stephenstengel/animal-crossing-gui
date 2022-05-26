@@ -8,7 +8,7 @@
 
 import gi
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk
+from gi.repository import Gtk, GLib
 
 from FileChooser import FileChooser
 from AnimalSorter import sortAnimalsIntoFolders
@@ -24,12 +24,19 @@ globalSortingProcess = None
 class Handlers():
 	isSortingHappening = False
 	sortingProcess = None
+	timeout_id = None
 	
-	def __init__(self, source_text_field, destination_text_field, progress_spinner, progress_bar):
+	def __init__(self, 
+			source_text_field, 
+			destination_text_field, 
+			progress_spinner, 
+			progress_bar,
+			run_button):
 		self.source_text_field = source_text_field
 		self.destination_text_field = destination_text_field
 		self.progress_spinner = progress_spinner
 		self.progress_bar = progress_bar
+		self.run_button = run_button
 	
 	def button_source_onclick(self, button):
 		print("Source button clicked!")
@@ -65,15 +72,16 @@ class Handlers():
 			print("\a")
 		elif self.sortingProcess is None:
 			print("Sorting...")
-			self.progress_spinner.start()
 			self.sortingProcess = multiprocessing.Process(target=sortAnimalsIntoFolders, args=(sourceStr, destStr, self.progress_bar,))
 			global globalSortingProcess
 			globalSortingProcess = self.sortingProcess ## Tre grava amikoj! Always update together
 			self.sortingProcess.start()
+			self.start_timer()
+			self.progress_bar.pulse()
+			self.progress_spinner.start()
+			self.run_button.set_sensitive(False)
+			self.progress_bar.set_text("Processing...")
 			
-			# ~ sortAnimalsIntoFolders(sourceStr, destStr, self.progress_bar)
-			# ~ print("Done!")
-			# ~ self.progress_spinner.stop()
 		endTime = time.time()
 		print("That took: " + str(endTime - startTime) + " seconds.")
 
@@ -85,3 +93,33 @@ class Handlers():
 				globalSortingProcess.terminate()
 		
 	
+	def start_timer(self):
+		self.timeout_id = GLib.timeout_add(1000, self.on_timeout, None)
+
+
+	def stop_timer(self):
+		if self.timeout_id:
+			GLib.source_remove(self.timeout_id)
+			self.timeout_id = None
+
+	#This will check the status of the sorting process.
+	#Reactivate button if done, else, pulse the progress bar.
+	def on_timeout(self, *args, **kwargs):
+		if self.timeout_id is not None:
+			#Check if process is still running
+			if self.sortingProcess is not None:
+				if self.sortingProcess.is_alive():
+					self.progress_bar.pulse()
+				else:
+					self.stop_timer()
+				
+					#erase the progress bar?
+					self.progress_bar.set_fraction(0.0)
+					self.progress_bar.set_text("Done!")
+					
+					#Set the run button back to clickable
+					self.run_button.set_sensitive(True)
+				
+			return True
+		else:
+			return False

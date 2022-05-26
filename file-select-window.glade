@@ -88,6 +88,7 @@
           <object class="GtkSpinner" id="progress_spinner">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
+            <property name="active">True</property>
           </object>
           <packing>
             <property name="left-attach">0</property>
