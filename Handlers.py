@@ -14,6 +14,9 @@ from FileChooser import FileChooser
 
 import multiprocessing
 
+import subprocess
+
+import os
 
 #global variable to kill a sorting process if the user clicks the exit button.
 globalSortingProcess = None
@@ -66,9 +69,29 @@ class Handlers():
 			print("DEST STRING NULL!")
 			print("\a")
 		elif self.sortingProcess is None:
-			from AnimalSorter import sortAnimalsIntoFolders #import lol
+			# ~ from AnimalSorter import sortAnimalsIntoFolders #import lol
 			print("Sorting...")
-			self.sortingProcess = multiprocessing.Process(target=sortAnimalsIntoFolders, args=(sourceStr, destStr,))
+			# ~ self.sortingProcess = multiprocessing.Process(target=sortAnimalsIntoFolders, args=(sourceStr, destStr,))
+			
+			# ~ #If running with the compiled sorter exe:
+			# ~ EXEC_NAME = "cmdsorting.exe"
+			# ~ self.sortingProcess = subprocess.Popen([EXEC_NAME, sourceStr, destStr])
+			
+			
+			#If TESTING script gui, running with the compiled sorter exe:
+			EXEC_NAME = os.path.normpath("./dist/cmdsorting/cmdsorting.exe")
+			self.sortingProcess = os.system(EXEC_NAME + " " + sourceStr + " " + destStr)
+			# ~ self.sortingProcess = subprocess.run([EXEC_NAME, sourceStr, destStr])
+			# ~ self.sortingProcess = subprocess.Popen([EXEC_NAME, sourceStr, destStr])
+			# ~ self.sortingProcess = multiprocessing.Process(args=(EXEC_NAME, sourceStr, destStr,))
+			
+			#if testing running the script version:
+			# ~ testInStr = os.path.join("./dist/cmdsorting", sourceStr)
+			# ~ testOutStr = os.path.join("./dist/cmdsorting", sourceStr)
+			# ~ self.sortingProcess = subprocess.run(["python", "cmdsorting.py", sourceStr, destStr])
+			# ~ self.sortingProcess = subprocess.Popen(["python", "cmdsorting.py", sourceStr, destStr])
+			
+			
 			global globalSortingProcess
 			globalSortingProcess = self.sortingProcess ## Tre grava amikoj! Always update together
 			
