@@ -11,6 +11,8 @@
 
 import os
 
+import tensorflow
+
 
 # ~ from models import currentBestModel
 
