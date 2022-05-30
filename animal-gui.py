@@ -9,6 +9,8 @@ import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 
+import multiprocessing
+
 
 def main(args):
 	print("Hello! Loading...")
@@ -36,5 +38,6 @@ def main(args):
 	return 0
 
 if __name__ == '__main__':
+	multiprocessing.freeze_support()
 	import sys
 	sys.exit(main(sys.argv))
