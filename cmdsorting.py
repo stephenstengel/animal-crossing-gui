@@ -37,6 +37,11 @@ def checkArgs(args):
 		pass
 		#print the helpfile and exit
 		exit(2)
+	
+	if firstStr is None or secondStr is None:
+		print("Testing exit!")
+		print("a string is still none!")
+		exit(1)
 
 	return firstStr, secondStr
 
