@@ -75,12 +75,16 @@ class Handlers():
 			
 			# ~ #If running with the compiled sorter exe:
 			# ~ EXEC_NAME = "cmdsorting.exe"
+			EXEC_NAME = os.path.join(os.path.normpath(".\dist\cmdsorting"), "cmdsorting.exe")
+			self.sortingProcess = os.system(EXEC_NAME + " " + sourceStr + " " + destStr)
 			# ~ self.sortingProcess = subprocess.Popen([EXEC_NAME, sourceStr, destStr])
+			# ~ self.sortingProcess = multiprocessing.Process([EXEC_NAME, sourceStr, destStr])
+			# ~ self.sortingProcess = subprocess.run([EXEC_NAME, sourceStr, destStr])
 			
 			
 			#If TESTING script gui, running with the compiled sorter exe:
-			EXEC_NAME = os.path.normpath("./dist/cmdsorting/cmdsorting.exe")
-			self.sortingProcess = os.system(EXEC_NAME + " " + sourceStr + " " + destStr)
+			# ~ EXEC_NAME = os.path.normpath("./dist/cmdsorting/cmdsorting.exe")
+			# ~ self.sortingProcess = os.system(EXEC_NAME + " " + sourceStr + " " + destStr)
 			# ~ self.sortingProcess = subprocess.run([EXEC_NAME, sourceStr, destStr])
 			# ~ self.sortingProcess = subprocess.Popen([EXEC_NAME, sourceStr, destStr])
 			# ~ self.sortingProcess = multiprocessing.Process(args=(EXEC_NAME, sourceStr, destStr,))
