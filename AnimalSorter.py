@@ -12,6 +12,7 @@
 import os
 
 
+
 # ~ from models import currentBestModel
 
 
@@ -209,7 +210,12 @@ def createDatasetFromImages(sourceFolderStr):
 	
 	from tensorflow import data
 	AUTOTUNE = data.AUTOTUNE
-	from tensorflow.keras.layers import Rescaling
+	
+	try:
+		from tensorflow.keras.layers import Rescaling
+	except:
+		from tensorflow.keras.layers.experimental.preprocessing import Rescaling
+
 	normalization_layer = Rescaling(1./255) #for newer versions of tensorflow
 	out_ds = out_ds.map(lambda x: normalization_layer(x),  num_parallel_calls=AUTOTUNE)
 	
