@@ -14,6 +14,7 @@ from tkinter import ttk
 from tkinter import filedialog
 
 import os
+import threading
 
 from functools import partial
 
@@ -30,6 +31,7 @@ class SorterWindow:
 	destStr = None
 	destStr_entry = ""
 	mainframe = None
+	myProgressBar = None
 	
 
 	def __init__(self, root):
@@ -40,6 +42,15 @@ class SorterWindow:
 
 		root.columnconfigure(0, weight=1)
 		root.rowconfigure(0, weight=1)
+
+		self.mainframe.columnconfigure(0, weight=0)
+		self.mainframe.rowconfigure(0, weight=0)
+		self.mainframe.columnconfigure(1, weight=0) #note 0
+		self.mainframe.rowconfigure(1, weight=1)
+		self.mainframe.columnconfigure(2, weight=1)
+		self.mainframe.rowconfigure(2, weight=1)
+		self.mainframe.columnconfigure(3, weight=1)
+		self.mainframe.rowconfigure(3, weight=1)
 
 		self.sourceStr = StringVar()
 		self.sourceStr_entry = ttk.Entry(self.mainframe, width=100, textvariable=self.sourceStr)
@@ -58,7 +69,12 @@ class SorterWindow:
 		destCommand = partial(self.openFolderDialog, self.destStr, destTitle)
 		ttk.Button(self.mainframe, text="Destination Folder", command = destCommand).grid(column=3, row=2, sticky = W + E)
 		
-		ttk.Button(self.mainframe, text="Run Sorter", command=self.runSorting).grid(column=2, row=3, sticky = W + E)
+		#progress bar
+		self.myProgressBar = ttk.Progressbar(self.mainframe, orient=HORIZONTAL, length=200, mode= "indeterminate")
+		self.myProgressBar.grid(column = 2, row = 3, sticky = W + E)
+		
+		#run button
+		ttk.Button(self.mainframe, text="Run Sorter", command=self.runSorting).grid(column=3, row=3, sticky = W + E)
 		
 		#Add a little padding to each widget
 		for child in self.mainframe.winfo_children(): 
@@ -73,7 +89,7 @@ class SorterWindow:
 		thisStr.set(filedialog.askdirectory(title = thisTitle))
 		
 	
-	def runSorting(self):
+	def runSorting(self, *args):
 		source = self.sourceStr.get()
 		dest = self.destStr.get()
 		
@@ -94,7 +110,10 @@ class SorterWindow:
 			return
 		
 		#run the function
-		sortAnimalsIntoFolders(source, dest)
+		
+		self.myProgressBar.start()
+		threading.Thread(target = sortAnimalsIntoFolders, args = (source, dest,)).start()
+		# ~ sortAnimalsIntoFolders(source, dest)
 		
 		
 		
