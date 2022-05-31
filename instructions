@@ -7,20 +7,30 @@ The installation command should be:
 Leave off --windowed for testing.
 
 Step 1:
-	Use pyinstaller from within your tensorflow environment to make the exe for the cmdsorting script. It is stand alone and will work on the command line.
+	Use pyinstaller from within your tensorflow environment to make
+	the exe for the cmdsorting script. It is stand alone and will
+	work on the command line.
 
 Step 2:
-	Use pyinstaller from within the msys2 mingw64 gtk building environment to create an exe for the gui.
+	Use pyinstaller from within the msys2 mingw64 gtk building
+	environment to create an exe for the gui.
 
 Step 3:
-	Place the dist folder created in step 1 for the cmdsorting exe and place it into the dist folder created for the gui. So it should look like:
+	Place the dist folder created in step 1 for the cmdsorting exe
+	and place it into the dist folder created for the gui. So it
+	should look like:
 
 	dist/animal-gui/animal-gui-folder/dist/cmdsorting/cmdsorting-files
 
 Step 4:
-	Copy a checkpoint folder into the dist/animal-gui/ folder. Also, make a directory filled with images to sort, and another directory that will recieve the sorted images. Hard coded to 100x100 images right now.
+	Copy a checkpoint folder into the dist/animal-gui/ folder. Also,
+	make a directory filled with images to sort, and another directory
+	that will recieve the sorted images. Hard coded to 100x100 images
+	right now.
 
 Step 5:
 	Copy the .glade file into the animal-gui.exe folder.
 
-Another option is to use the -F flag with pyinstaller to make the exes contain all the neccessary files, but that increases load time on windows by a lot.
+Another option is to use the -F flag with pyinstaller to make the exes
+contain all the neccessary files, but that increases load time on windows
+by a lot.
