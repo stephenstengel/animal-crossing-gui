@@ -69,14 +69,14 @@ class Handlers():
 			print("DEST STRING NULL!")
 			print("\a")
 		elif self.sortingProcess is None:
-			# ~ from AnimalSorter import sortAnimalsIntoFolders #import lol
+			from AnimalSorter import sortAnimalsIntoFolders #import lol
 			print("Sorting...")
-			# ~ self.sortingProcess = multiprocessing.Process(target=sortAnimalsIntoFolders, args=(sourceStr, destStr,))
+			self.sortingProcess = multiprocessing.Process(target=sortAnimalsIntoFolders, args=(sourceStr, destStr,))
 			
 			# ~ #If running with the compiled sorter exe:
 			# ~ EXEC_NAME = "cmdsorting.exe"
-			EXEC_NAME = os.path.join(os.path.normpath(".\dist\cmdsorting"), "cmdsorting.exe")
-			self.sortingProcess = os.system(EXEC_NAME + " " + sourceStr + " " + destStr)
+			# ~ EXEC_NAME = os.path.join(os.path.normpath(".\dist\cmdsorting"), "cmdsorting.exe")
+			# ~ self.sortingProcess = os.system(EXEC_NAME + " " + sourceStr + " " + destStr)
 			# ~ self.sortingProcess = subprocess.Popen([EXEC_NAME, sourceStr, destStr])
 			# ~ self.sortingProcess = multiprocessing.Process([EXEC_NAME, sourceStr, destStr])
 			# ~ self.sortingProcess = subprocess.run([EXEC_NAME, sourceStr, destStr])
