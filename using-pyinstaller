@@ -1,3 +1,6 @@
+Command that works:
+pyinstaller sorter-gui.py --windowed --add-data="settings.ini:." --add-data="checkpoint:checkpoint"
+
 To make pyinstaller work correctly, use the --windowed flag on the script
 that you want compiled:
 
