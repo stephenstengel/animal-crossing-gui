@@ -52,13 +52,13 @@ class SorterWindow:
 		# ~ ttk.Button(self.mainframe, text="Source Folder", command=self.openSourceDialog).grid(column=3, row=1, sticky=W)
 		sourceTitle = "Choose a source folder..."
 		sourceCommand = partial(self.openFolderDialog, self.sourceStr, sourceTitle)
-		ttk.Button(self.mainframe, text="Source Folder", command = sourceCommand).grid(column=3, row=1, sticky=W)
+		ttk.Button(self.mainframe, text="Source Folder", command = sourceCommand).grid(column=3, row=1, sticky = W + E)
 		
 		destTitle = "Choose a destination folder..."
 		destCommand = partial(self.openFolderDialog, self.destStr, destTitle)
-		ttk.Button(self.mainframe, text="Destination Folder", command = destCommand).grid(column=3, row=2, sticky=W)
+		ttk.Button(self.mainframe, text="Destination Folder", command = destCommand).grid(column=3, row=2, sticky = W + E)
 		
-		ttk.Button(self.mainframe, text="Run Sorter", command=self.runSorting).grid(column=2, row=3, sticky=W)
+		ttk.Button(self.mainframe, text="Run Sorter", command=self.runSorting).grid(column=2, row=3, sticky = W + E)
 		
 		#Add a little padding to each widget
 		for child in self.mainframe.winfo_children(): 
