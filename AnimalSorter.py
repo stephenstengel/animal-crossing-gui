@@ -181,7 +181,8 @@ def normalizeAllNames(originalFullNames):
 	return outList
 
 
-
+#This function copys the original full size image into the correct
+#destination folder based on the result of the search.
 def copyPredictions(originalFullNames, originalNames, predictionsArray, destStr, classNamesListInt, classNamesListStr):
 	import shutil
 	#Get predicted labels in integer form.
