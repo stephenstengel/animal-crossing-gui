@@ -56,6 +56,7 @@ IMG_WIDTH = 100
 IMG_HEIGHT = 100
 IMG_CHANNELS = 3
 IMG_SHAPE_TUPPLE = (IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS)
+BATCH_SIZE = 32 #Same as tensorflow default.
 
 CHECKPOINT_FOLDER = os.path.normpath("./checkpoint/")
 print("Checkpoint folder: " + CHECKPOINT_FOLDER)
@@ -166,6 +167,8 @@ def updateGlobalsFromSettings(settingsDict):
 	IMG_CHANNELS = int(settingsDict["IMG_CHANNELS"])
 	global CHECKPOINT_FOLDER
 	CHECKPOINT_FOLDER = settingsDict["CHECKPOINT_FOLDER"] #This one remains a string
+	global BATCH_SIZE
+	BATCH_SIZE = int(settingsDict["BATCH_SIZE"])
 	
 
 
@@ -231,7 +234,7 @@ def createDatasetFromImages(sourceFolderStr):
 			label_mode = None,
 			color_mode = "rgb",
 			image_size = (IMG_HEIGHT, IMG_WIDTH), #triple check it is (h, w). Pillow files are (w, h) and need conversion to numpy/tensorflow by swapping height and width dimensions. (transpose?)
-			batch_size = 32, #this might need tweaking depending on how much ram their computers have. 32 is default.
+			batch_size = BATCH_SIZE, #this might need tweaking depending on how much ram their computers have. 32 is default.
 			shuffle = False,
 			interpolation = "bilinear", #default is bilinear
 			)
