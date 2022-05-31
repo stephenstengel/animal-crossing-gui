@@ -57,11 +57,11 @@ class SorterWindow:
 		self.mainframe.rowconfigure(3, weight=1)
 
 		self.sourceStr = StringVar()
-		self.sourceStr_entry = ttk.Entry(self.mainframe, width=100, textvariable=self.sourceStr)
+		self.sourceStr_entry = ttk.Entry(self.mainframe, width=80, textvariable=self.sourceStr)
 		self.sourceStr_entry.grid(column=2, row=1, sticky=(W, E))
 
 		self.destStr = StringVar()
-		self.destStr_entry = ttk.Entry(self.mainframe, width=100, textvariable=self.destStr)
+		self.destStr_entry = ttk.Entry(self.mainframe, width=80, textvariable=self.destStr)
 		self.destStr_entry.grid(column=2, row=2, sticky=(W, E))
 
 		sourceTitle = "Choose a source folder..."

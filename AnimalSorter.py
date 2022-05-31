@@ -66,6 +66,20 @@ print("Present directory: " + PRESENT_DIRECTORY)
 
 
 def sortAnimalsIntoFolders(sourceStr, destStr):
+	settingsFileName = os.path.normpath("settings.ini")
+	settingsDict = getSettingsFromFile(settingsFileName)
+	updateGlobalsFromSettings(settingsDict)
+	
+	
+	print("img wid: " + str(IMG_WIDTH))
+	print("img h: " + str(IMG_HEIGHT))
+	print("img chan: " + str(IMG_CHANNELS))
+	print("check: " + str(CHECKPOINT_FOLDER))
+	
+	# ~ print("testing exit(2)")
+	# ~ import sys
+	# ~ sys.exit(2)
+	
 	import time
 	print("Source dir: " + str(sourceStr))
 	print("Destenation dir: " + str(destStr))
@@ -129,6 +143,67 @@ def sortAnimalsIntoFolders(sourceStr, destStr):
 	print("Copying files...")
 	copyPredictions(originalFullNames, originalNames, predictionsArray, destStr, CLASS_NAMES_LIST_INT, CLASS_NAMES_LIST_STR)
 	print("Done!")
+
+
+#This function sets a bunch of settings from a file.
+#Maybe the threading return value code could make a popup on error.
+def getSettingsFromFile(settingsFileName):
+	print("settingsFileName: " + str(settingsFileName))
+	import sys
+	if not os.path.isfile(settingsFileName):
+		print("Settings file not found!")
+		sys.exit(3)
+	
+	fileContents = []
+	with open(settingsFileName, "r") as settingsFile:
+		print("file opened!")
+		fileContents = settingsFile.readlines()
+	
+	for thing in fileContents:
+		print(thing, end="")
+	print()
+	
+	goodContents = []
+	#get only non comment lines
+	for line in fileContents:
+		if not line.startswith("#") and line != "\n":
+			print("setting detected")
+			goodContents.append(line.rstrip())
+		
+	print("new contents...")
+	for thing in goodContents:
+		print(thing)
+	print("### END LIST ###")
+	
+	settingsDict = {}
+	for thing in goodContents:
+		name, value = thing.split("=")
+		print(str(name) + " " + str(value))
+		settingsDict.update({name : value})
+	
+	for thing in settingsDict:
+		print(thing, end=": ")
+		print(settingsDict[thing])
+	
+	
+	return settingsDict
+
+
+def updateGlobalsFromSettings(settingsDict):
+	##! BIG NOTE !##
+	# The names of the items in this settingsDict dictionary are not
+	# automatically the same as in the settings file. Take care to copy
+	# paste them if you update this. There might be a clever way to
+	# get the same name automatically.
+	global IMG_WIDTH
+	IMG_WIDTH = int(settingsDict["IMG_WIDTH"])
+	global IMG_HEIGHT
+	IMG_HEIGHT = int(settingsDict["IMG_HEIGHT"])
+	global IMG_CHANNELS
+	IMG_CHANNELS = int(settingsDict["IMG_CHANNELS"])
+	global CHECKPOINT_FOLDER
+	CHECKPOINT_FOLDER = settingsDict["CHECKPOINT_FOLDER"] #This one remains a string
+	
 
 
 
