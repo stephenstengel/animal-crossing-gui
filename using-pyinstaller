@@ -1,5 +1,7 @@
-Command that works:
+Command that works (Linux):
 pyinstaller sorter-gui.py --windowed --add-data="settings.ini:." --add-data="checkpoint:checkpoint"
+(Windows): Windows uses semicolons; for path separators instead of colons:
+pyinstaller sorter-gui.py --windowed --add-data="settings.ini;." --add-data="checkpoint;checkpoint"
 
 To make pyinstaller work correctly, use the --windowed flag on the script
 that you want compiled:
