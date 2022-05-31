@@ -1,0 +1,23 @@
+Animal Crossing GUI
+
+This is the gui repository for the Animal Crossing project. This program will take pictures in a folder and decide what kind of animal the picture is of.
+
+sorter-gui.py is for the tkinter gui version. Tkinter is currently tested working on linux for the script form and the pyinstaller exe form.
+
+Tkinter seems like it will better than gtk because of the ease of compiling on windows. We'll find out tomorrow.
+
+animal-gui.py is for the gtk gui version. It is tested working on Linux for the script and exe forms. It also works on windows in the script form. Making the exe on windows currently involves compiling the standalone cmdsorting.py into exe form, followed by compiling the animal-gui.py into exe form. The animal-gui exe will call the cmdsorting exe.
+
+cmdsorting.py is a standalone terminal / command prompt only version of the program.
+
+TODO:
+
+Beutification
+
+Ease of use
+
+Bug testing
+
+Add a libre license
+
+Copyright 2022 Stephen Stengel <stephen.stengel@cwu.edu> and friends
