@@ -34,12 +34,15 @@ class SorterWindow:
 		destStr_entry = ttk.Entry(mainframe, width=100, textvariable=destStr)
 		destStr_entry.grid(column=2, row=2, sticky=(W, E))
 
+		ttk.Button(mainframe, text="Source Folder", command=self.testFunction).grid(column=3, row=1, sticky=W)
+		ttk.Button(mainframe, text="Destination Folder", command=self.testFunction).grid(column=3, row=2, sticky=W)
+		ttk.Button(mainframe, text="Run Sorter", command=self.testFunction).grid(column=2, row=3, sticky=W)
 
 
 
 
-
-
+	def testFunction(*args):
+		print("Test function!")
 
 
 
