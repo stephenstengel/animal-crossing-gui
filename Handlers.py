@@ -14,7 +14,6 @@ from FileChooser import FileChooser
 
 import multiprocessing
 
-
 #global variable to kill a sorting process if the user clicks the exit button.
 globalSortingProcess = None
 
@@ -69,6 +68,7 @@ class Handlers():
 			from AnimalSorter import sortAnimalsIntoFolders #import lol
 			print("Sorting...")
 			self.sortingProcess = multiprocessing.Process(target=sortAnimalsIntoFolders, args=(sourceStr, destStr,))
+			
 			global globalSortingProcess
 			globalSortingProcess = self.sortingProcess ## Tre grava amikoj! Always update together
 			
