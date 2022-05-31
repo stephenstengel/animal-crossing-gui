@@ -58,7 +58,7 @@ class SorterWindow:
 		destCommand = partial(self.openFolderDialog, self.destStr, destTitle)
 		ttk.Button(self.mainframe, text="Destination Folder", command = destCommand).grid(column=3, row=2, sticky=W)
 		
-		ttk.Button(self.mainframe, text="Run Sorter", command=self.testFunction).grid(column=2, row=3, sticky=W)
+		ttk.Button(self.mainframe, text="Run Sorter", command=self.runSorting).grid(column=2, row=3, sticky=W)
 		
 		#Add a little padding to each widget
 		for child in self.mainframe.winfo_children(): 
@@ -73,11 +73,37 @@ class SorterWindow:
 		thisStr.set(filedialog.askdirectory(title = thisTitle))
 		
 	
-	# ~ def runSorting
+	def runSorting(self):
+		source = self.sourceStr.get()
+		dest = self.destStr.get()
+		
+		#check if either empty
+		if source == "":
+			print("source empty! Make a popup to inform them!")
+		
+			return
+		elif dest == "":
+			print("Dest empty! Make popup!")
+			
+			return
+		
+		#check if strings are the same
+		elif source == dest:
+			print("source == dest. Make popup for this as well!")
+		
+			return
+		
+		#run the function
+		sortAnimalsIntoFolders(source, dest)
+		
+		
+		
 
 	def testFunction(self, *args):
 		try:
 			print("Test function!")
+			print("source: " + str(self.sourceStr.get()))
+			print("dest: " + str(self.destStr.get()))
 		except ValueError:
 			pass
 
