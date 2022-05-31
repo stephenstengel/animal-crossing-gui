@@ -20,4 +20,7 @@ Step 3:
 Step 4:
 	Copy a checkpoint folder into the dist/animal-gui/ folder. Also, make a directory filled with images to sort, and another directory that will recieve the sorted images. Hard coded to 100x100 images right now.
 
+Step 5:
+	Copy the .glade file into the animal-gui.exe folder.
+
 Another option is to use the -F flag with pyinstaller to make the exes contain all the neccessary files, but that increases load time on windows by a lot.
