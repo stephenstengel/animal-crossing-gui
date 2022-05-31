@@ -66,21 +66,18 @@ print("Present directory: " + PRESENT_DIRECTORY)
 
 
 def sortAnimalsIntoFolders(sourceStr, destStr):
+	import time
+	
 	settingsFileName = os.path.normpath("settings.ini")
 	settingsDict = getSettingsFromFile(settingsFileName)
 	updateGlobalsFromSettings(settingsDict)
 	
+	print("Settings retrieved from " + settingsFileName)
+	print("IMG_WIDTH: " + str(IMG_WIDTH))
+	print("IMG_HEIGHT: " + str(IMG_HEIGHT))
+	print("IMG_CHANNELS: " + str(IMG_CHANNELS))
+	print("CHECKPOINT_FOLDER: " + str(CHECKPOINT_FOLDER))
 	
-	print("img wid: " + str(IMG_WIDTH))
-	print("img h: " + str(IMG_HEIGHT))
-	print("img chan: " + str(IMG_CHANNELS))
-	print("check: " + str(CHECKPOINT_FOLDER))
-	
-	# ~ print("testing exit(2)")
-	# ~ import sys
-	# ~ sys.exit(2)
-	
-	import time
 	print("Source dir: " + str(sourceStr))
 	print("Destenation dir: " + str(destStr))
 	
@@ -89,24 +86,13 @@ def sortAnimalsIntoFolders(sourceStr, destStr):
 	foldersToCreate = createOutputFoldernames(CLASS_NAMES_LIST_STR, destStr)
 	makeDirectories(foldersToCreate)
 	
-	#Load the model from models.py. This is currently blocking the gui. (can't update window till done)
-	#maybe this should be a part of the splash screen step?
-	#just pass the model in as a parameter.
-	#maybe change this to a class object and save as a field.? more work tho.
-	#another solution: a separate button to load the model, keep the run button disabled until it is readied.
-	# ~ print("Loading model...")
-	# ~ theModel = currentBestModel(IMG_SHAPE_TUPPLE)
-	# ~ print("printing summary...")
-	# ~ theModel.summary()
-	
-	#Load the checkpoint weights.
-	# ~ print("Loading weights...")
-	# ~ theModel.load_weights(os.path.abspath(CHECKPOINT_FOLDER))
-	
 	
 	#Turn the input images into a dataset?
 	print("Loading the dataset...")
+	startDataLoad = time.time()
 	images_ds, originalFullNames = createDatasetFromImages(sourceStr)
+	endDataLoad = time.time()
+	print("Dataset loaded in " + str(endDataLoad - startDataLoad) + " seconds.")
 	
 	#normalize file paths for all operating systems
 	originalFullNames = normalizeAllNames(originalFullNames)
@@ -114,12 +100,13 @@ def sortAnimalsIntoFolders(sourceStr, destStr):
 	#strip base path from original names
 	originalNames = stripBasepathFromFilenames(originalFullNames)
 	
-	
 
 	#It might be faster to load the model and weights separately. need testing.
+	#how to load the checkpoint weights separate from the model
+	# ~ theModel.load_weights(os.path.abspath(CHECKPOINT_FOLDER))
+
 	startModelLoadTime = time.time()
 	print("Loading model...")
-	# ~ print("COMENTED OUT FOR TESTING!")
 	from tensorflow.keras.models import load_model
 	theModel = load_model(CHECKPOINT_FOLDER)
 	theModel.summary()
@@ -139,52 +126,28 @@ def sortAnimalsIntoFolders(sourceStr, destStr):
 	print(str(predictionsArray))
 	print("Prediction took: " + str(elapsedTime) + " seconds.")
 	
-	
 	print("Copying files...")
 	copyPredictions(originalFullNames, originalNames, predictionsArray, destStr, CLASS_NAMES_LIST_INT, CLASS_NAMES_LIST_STR)
-	print("Done!")
 
 
 #This function sets a bunch of settings from a file.
 #Maybe the threading return value code could make a popup on error.
 def getSettingsFromFile(settingsFileName):
-	print("settingsFileName: " + str(settingsFileName))
-	import sys
-	if not os.path.isfile(settingsFileName):
-		print("Settings file not found!")
-		sys.exit(3)
-	
 	fileContents = []
 	with open(settingsFileName, "r") as settingsFile:
-		print("file opened!")
 		fileContents = settingsFile.readlines()
 	
-	for thing in fileContents:
-		print(thing, end="")
-	print()
-	
-	goodContents = []
 	#get only non comment lines
+	goodContents = []
 	for line in fileContents:
 		if not line.startswith("#") and line != "\n":
-			print("setting detected")
 			goodContents.append(line.rstrip())
-		
-	print("new contents...")
-	for thing in goodContents:
-		print(thing)
-	print("### END LIST ###")
-	
+
+	#convert to a dictionary
 	settingsDict = {}
 	for thing in goodContents:
 		name, value = thing.split("=")
-		print(str(name) + " " + str(value))
 		settingsDict.update({name : value})
-	
-	for thing in settingsDict:
-		print(thing, end=": ")
-		print(settingsDict[thing])
-	
 	
 	return settingsDict
 
@@ -325,8 +288,6 @@ def deleteDirectories(listDirsToDelete):
 
 
 
-#Need to preserve filenames with os.walk (thats how tensorflow loads them when not shuffled.)
-#Investigate! Make sure that the images have the right names when they come out! A small class like weasel should be good for that.
 def sortPredictions(images_ds, predictionsArray, sourceStr, destStr, classNamesListInt, classNamesListStr):
 	
 	from skimage.io import imsave
@@ -371,8 +332,6 @@ def getOutFolderNameStr(classNamesListStr, classInt):
 
 
 #Returns a list of filenames from the input directory
-#uses os.walk, so it should be the same order as tensorflow loads them!!!!!!!!!!!!!!!!!!!!!!!!!!!maybe
-#Currently not getting the same filenames as tensorflow  :(
 def getListOfFilenames(baseDirectory, include_base = False):
 	myNames = []
 	for (root, dirNames, fileNames) in os.walk(baseDirectory):
