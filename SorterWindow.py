@@ -43,12 +43,10 @@ class SorterWindow:
 		self.root.title("Animal Sorter!")
 		
 		## Create menu
-		m = Menu(self.root)
-		m_help = Menu(m, tearoff=0)
-		m.add_cascade(menu=m_help, label="Help")
+		m_help = Menu(self.root, tearoff=0)
 		m_help.add_command(label="Instructions", command = lambda: self.root.event_generate("<<OpenInstructionsDialog>>"))
 		m_help.add_command(label="About", command = lambda: self.root.event_generate("<<OpenAboutDialog>>"))
-		self.root["menu"] = m
+		self.root["menu"] = m_help
 		self.root.bind("<<OpenInstructionsDialog>>", self.launchInstructions)
 		self.root.bind("<<OpenAboutDialog>>", self.launchAbout)
 		
