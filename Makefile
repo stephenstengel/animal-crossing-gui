@@ -21,4 +21,4 @@ cmd:
 #This will not work on windows.
 .PHONY: clean
 clean:
-	rm -rf dist build test-outputs/*/*.jpg  test-outputs/*  *.spec
+	rm -rf dist build test-outputs/*/*.jpg  test-outputs/*  *.spec  cmddist  cmdbuild
