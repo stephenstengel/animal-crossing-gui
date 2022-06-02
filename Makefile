@@ -5,6 +5,7 @@
 # Copyright 2022 Stephen Stengel <stephen.stengel@cwu.edu> and friends
 #
 # Will probably only work on Mac and Linux. No idea if Windows has Make.
+# Just copy paste the command on windows.
 
 sorter-gui:
 	pyinstaller sorter-gui.py --windowed --add-data="settings.ini:." --add-data="checkpoint:checkpoint"
