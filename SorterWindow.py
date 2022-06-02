@@ -22,7 +22,7 @@ from AnimalSorter import sortAnimalsIntoFolders
 #Heavy influence from the tutorial at:  https://tkdocs.com/tutorial/firstexample.html
 
 
-STEPHEN_DEBUG = True
+STEPHEN_DEBUG = False
 
 class SorterWindow:
 	#I like setting these here because they will cause error messages if something goes wrong. --Stephen
@@ -87,6 +87,9 @@ class SorterWindow:
 		if STEPHEN_DEBUG:
 			self.sourceStr.set(os.path.normpath("/home/stephen/Documents/School/0spring22/animal-crossing/animal-crossing-gui/test-images"))
 			self.destStr.set(os.path.normpath("/home/stephen/Documents/School/0spring22/animal-crossing/animal-crossing-gui/test-outputs"))
+		else:
+			self.sourceStr.set(os.path.normpath("Enter path to images to be sorted"))
+			self.destStr.set(os.path.normpath("Enter path to folder where the sorted pictures will go."))
 
 
 	def openFolderDialog(self, thisStr, thisTitle, *args):

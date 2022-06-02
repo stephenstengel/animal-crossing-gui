@@ -25,7 +25,7 @@ IMG_SHAPE_TUPPLE = (IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS)
 BATCH_SIZE = None
 CHECKPOINT_FOLDER = None
 
-DEBUG_MODE = True
+DEBUG_MODE = False
 
 
 def sortAnimalsIntoFolders(sourceStr, destStr):
