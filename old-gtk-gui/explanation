@@ -1,0 +1,3 @@
+This gtk gui was used before the tkinter version. However, getting it working on Windows with pyinstaller was a nightmare so it is now unused. The best we could do was compile the gtk gui and the AnimalSorter separately. That way the gui could call the sorter exe when you press the run button.
+
+The new tkinter gui can be compiled with the sorter in one exe. This is preferable because then we don't have to worry about Windows mangling the input parameters. This is just one more thing that could go wrong and should be avoided if possible. Although, we could save the parameters to a file in a specific place and then load and parse the file.
