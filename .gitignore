@@ -3,3 +3,9 @@ __pycache__
 checkpoint
 test-images
 test-outputs
+build
+dist
+one-folder-everything-full-size
+sorter-gui.spec
+test-images-400-300
+a-few-pics/
