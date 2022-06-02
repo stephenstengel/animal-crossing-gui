@@ -1,0 +1,19 @@
+Animal Crossing Project Animal Sorter
+Command Line Version
+
+This is the command line only version of the Animal Sorter!
+It takes a folder of pictures and sorts them into folders based on what
+the machine learing model thinks they are.
+The original images are not deleted.
+
+Usage:
+	./cmdsorting.exe inputs-folder outputs-folder
+
+Example:
+	./cmdsorting.exe a-few-pics test-outputs
+
+You may need to specify the full path to these folders if they are not
+in the same folder as cmdsorting.exe
+
+
+Copyright 2022 Stephen Stengel <stephen.stengel@cwu.edu> and friends

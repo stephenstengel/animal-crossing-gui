@@ -11,6 +11,9 @@ import sys
 
 from AnimalSorter import sortAnimalsIntoFolders
 
+HELPFILE_PATH = "cmd-helpfile.txt"
+
+
 def main(args):
 	print("Hello!")
 	inStr, outStr = checkArgs(args)
@@ -23,29 +26,35 @@ def main(args):
 
 
 def checkArgs(args):
+	helpArgs = ["--help", "-help", "help", "h", "-h", "--h"]
+	if not set(helpArgs).isdisjoint(args):
+		printHelpFile()
+		sys.exit(-4)
+
 	argslen = len(args)
-	firstStr, secondStr = None, None
+	firstStr, secondStr = "", ""
+	
 	if argslen == 1:
-		print("No input. Using manual mode.")
+		print("No input. Using manual mode. (Press control + C to exit...")
 		firstStr, secondStr = askForInput()
-	if argslen == 2 and args[1] == "tux":
-		printTux()
+	elif argslen == 2 and args[1] == "tux":
+		printTextFile("tux.ascii")
 		sys.exit(99)
 	elif argslen == 3:
 		firstStr, secondStr = args[1], args[2]
 	elif argslen > 3:
 		print("Bad input")
-		#print the helpfile and exit
+		printHelpFile()
 		sys.exit(2)
 	
-	if firstStr is None or secondStr is None:
-		print("a folder is still missing!")
+	if firstStr == "" or secondStr == "":
+		print("a folder is still not specified!")
 		sys.exit(1)
 
-	firstStr = os.path.normpath(firstStr)
-	secondStr = os.path.normpath(secondStr)
+	firstStr = os.path.abspath(firstStr)
+	secondStr = os.path.abspath(secondStr)
 
-	if firstStr != None and secondStr != None:
+	if firstStr != "" and secondStr != "":
 		print("Input folder: " + str(firstStr) + "\n" \
 				+ "Output folder: " + str(secondStr) )
 
@@ -53,19 +62,22 @@ def checkArgs(args):
 
 
 def askForInput():
-	print("Enter the relative path of the input pictures folder...")
+	print("Enter the path of the input pictures folder...")
 	inStr = input()
-	print("Enter the relative path of where you would like the sorted pictures to be saved...")
+	print("Enter the path of where you would like the sorted pictures to be saved...")
 	outStr = input()
 	
 	return inStr, outStr
 
 
-def printTux():
-	with open("tux.ascii", "r") as tuxFile:
+def printTextFile(fileName):
+	with open(fileName, "r") as tuxFile:
 		for line in tuxFile:
 			print(line, end = "")
 		print()
+
+def printHelpFile():
+	printTextFile(HELPFILE_PATH)
 
 if __name__ == '__main__':
 	import sys
