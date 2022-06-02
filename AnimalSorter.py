@@ -57,7 +57,7 @@ def sortAnimalsIntoFolders(sourceStr, destStr):
 	startDataLoad = time.time()
 	images_ds, originalFullNames = createDatasetFromImages(sourceStr)
 	endDataLoad = time.time()
-	print("Dataset loaded in " + str(endDataLoad - startDataLoad) + " seconds.")
+	print("Dataset loaded in " + str(round(endDataLoad - startDataLoad, 4)) + " seconds.")
 	
 	#normalize file paths for all operating systems
 	originalFullNames = normalizeAllNames(originalFullNames)
@@ -76,7 +76,7 @@ def sortAnimalsIntoFolders(sourceStr, destStr):
 	theModel = load_model(CHECKPOINT_FOLDER)
 	theModel.summary()
 	mLoadElapsed = time.time() - startModelLoadTime
-	print("Loading model complete in: " + str(mLoadElapsed) + " seconds.")
+	print("Loading model complete in: " + str(round(mLoadElapsed, 4)) + " seconds.")
 	
 	
 	#Get a list of predictions
@@ -88,7 +88,7 @@ def sortAnimalsIntoFolders(sourceStr, destStr):
 			)
 	elapsedTime = time.time() - startTime
 	print(str(predictionsArray))
-	print("Prediction took: " + str(elapsedTime) + " seconds.")
+	print("Prediction took: " + str(round(elapsedTime, 4)) + " seconds.")
 	
 	print("Copying files...")
 	copyPredictions(originalFullNames, originalNames, predictionsArray, destStr, CLASS_NAMES_LIST_INT, CLASS_NAMES_LIST_STR)

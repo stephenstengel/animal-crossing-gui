@@ -11,6 +11,7 @@
 
 from tkinter import *
 from tkinter import ttk
+from tkinter import messagebox
 from tkinter import filedialog
 
 import os
@@ -40,10 +41,22 @@ class SorterWindow:
 		self.waitTime = 2000
 		self.root = root
 		self.root.title("Animal Sorter!")
-
+		
+		## Create menu
+		m = Menu(self.root)
+		m_help = Menu(m, tearoff=0)
+		m.add_cascade(menu=m_help, label="Help")
+		m_help.add_command(label="Instructions", command = lambda: self.root.event_generate("<<OpenInstructionsDialog>>"))
+		m_help.add_command(label="About", command = lambda: self.root.event_generate("<<OpenAboutDialog>>"))
+		self.root["menu"] = m
+		self.root.bind("<<OpenInstructionsDialog>>", self.launchInstructions)
+		self.root.bind("<<OpenAboutDialog>>", self.launchAbout)
+		
+		#Create the background frame
 		self.mainframe = ttk.Frame(self.root, padding="10 10 10 10")
 		self.mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
 
+		#Set weights for resizing
 		self.root.columnconfigure(0, weight=1)
 		self.root.rowconfigure(0, weight=1)
 
@@ -56,6 +69,7 @@ class SorterWindow:
 		self.mainframe.columnconfigure(3, weight=1)
 		self.mainframe.rowconfigure(3, weight=1)
 
+		#Create the text entry fields
 		self.sourceStr = StringVar()
 		self.sourceStr_entry = ttk.Entry(self.mainframe, width=80, textvariable=self.sourceStr)
 		self.sourceStr_entry.grid(column=2, row=1, sticky=(W, E))
@@ -64,6 +78,7 @@ class SorterWindow:
 		self.destStr_entry = ttk.Entry(self.mainframe, width=80, textvariable=self.destStr)
 		self.destStr_entry.grid(column=2, row=2, sticky=(W, E))
 
+		#Create the buttons
 		sourceTitle = "Choose a source folder..."
 		sourceCommand = partial(self.openFolderDialog, self.sourceStr, sourceTitle)
 		ttk.Button(self.mainframe, text="Source Folder", command = sourceCommand).grid(column=3, row=1, sticky = W + E)
@@ -72,24 +87,49 @@ class SorterWindow:
 		destCommand = partial(self.openFolderDialog, self.destStr, destTitle)
 		ttk.Button(self.mainframe, text="Destination Folder", command = destCommand).grid(column=3, row=2, sticky = W + E)
 		
-		#progress bar
-		self.myProgressBar = ttk.Progressbar(self.mainframe, orient=HORIZONTAL, length=200, mode= "indeterminate")
-		self.myProgressBar.grid(column = 2, row = 3, sticky = W + E)
-		
-		#run button
 		self.myRunButton = ttk.Button(self.mainframe, text="Run Sorter", command=self.runSorting)
 		self.myRunButton.grid(column=3, row=3, sticky = W + E)
+		
+		#Create progress bar
+		self.myProgressBar = ttk.Progressbar(self.mainframe, orient=HORIZONTAL, length=200, mode= "indeterminate")
+		self.myProgressBar.grid(column = 2, row = 3, sticky = W + E)
 		
 		#Add a little padding to each widget
 		for child in self.mainframe.winfo_children(): 
 			child.grid_configure(padx=5, pady=5)
 
+		#Set default entry field texts
 		if STEPHEN_DEBUG:
 			self.sourceStr.set(os.path.normpath("/home/stephen/Documents/School/0spring22/animal-crossing/animal-crossing-gui/test-images"))
 			self.destStr.set(os.path.normpath("/home/stephen/Documents/School/0spring22/animal-crossing/animal-crossing-gui/test-outputs"))
 		else:
 			self.sourceStr.set(os.path.normpath("Enter path to images to be sorted"))
 			self.destStr.set(os.path.normpath("Enter path to folder where the sorted pictures will go."))
+
+
+	#Open a popup for the about button.
+	def launchAbout(*args):
+		theMessage = "This program takes images in a folder and sorts " \
+				"them into an output folder based on what animal the" \
+				" machine learning algorithm thinks they are."
+		theMessage += \
+				"\n\nAnimal Crossing Project\n\n" \
+				+ "CWU 2022\n\n" \
+				+ "Adara Andonie\n" \
+				"Alex Worland\n" \
+				"Harlow Huber\n" \
+				"Lincoln Huber\n" \
+				"Stephen Stengel\n"
+		
+		messagebox.showinfo(title = "About this program", message = theMessage)
+
+
+	#Open a popup for the instructions button.
+	def launchInstructions(*args):
+		theMessage = "Click the \"Source Folder\" button to choose what folder of pictures to sort.\n\n" \
+				"Then click the \"Destination Folder\" button to choose where to copy the sorted pictures to.\n\n" \
+				"Then click the \"Run Sorter\" button to perform the sorting."
+		messagebox.showinfo(title = "Instructions", message = theMessage)
 
 
 	def openFolderDialog(self, thisStr, thisTitle, *args):
@@ -121,14 +161,15 @@ class SorterWindow:
 		self.myProgressBar.start()
 		self.myRunButton.state(["disabled"])
 		
-		# ~ sortAnimalsIntoFolders(source, dest)
-		# ~ self.mySortThread = threading.Thread(target = self.testFunction, args = (source, dest,))
-		self.mySortThread = threading.Thread(target = sortAnimalsIntoFolders, args = (source, dest,))
+		if STEPHEN_DEBUG:
+			self.mySortThread = threading.Thread(target = self.testFunction, args = (source, dest,))
+		else:
+			self.mySortThread = threading.Thread(target = sortAnimalsIntoFolders, args = (source, dest,))
 		self.mySortThread.start()
 		self.root.after(self.waitTime, self.threadChecker)
 
 
-	#Check if the sorting is done every few seconds.
+	#Check if the sorting thread is done every few seconds.
 	def threadChecker(self):
 		print("Threadchecker called!")
 		if self.mySortThread.is_alive():
@@ -142,6 +183,7 @@ class SorterWindow:
 		self.mySortThread = None
 		self.myRunButton.state(["!disabled"])
 		print("reset complete")
+		#create popup to say done?
 
 
 	def testFunction(self, *args):

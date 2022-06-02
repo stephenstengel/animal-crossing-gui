@@ -11,10 +11,10 @@ sorter-gui:
 
 #Comment the above and use this one instead on windows:
 #sorter-gui:
-#	pyinstaller sorter-gui.py --windowed --add-data="settings.ini;." --add-data="checkpoint;checkpoint"
+#	pyinstaller sorter-gui.py --windowed --add-data="settings.ini;." --add-data="checkpoint;checkpoint" --add-data="tux.ascii;."
 
 cmd:
-	pyinstaller cmdsorting.py --distpath=cmddist --workpath=cmdbuild --add-data="settings.ini:." --add-data="checkpoint:checkpoint"
+	pyinstaller cmdsorting.py --distpath=cmddist --workpath=cmdbuild --add-data="settings.ini:." --add-data="checkpoint:checkpoint" --add-data="cmd-helpfile.txt:." --add-data="tux.ascii:."
 
 
 
