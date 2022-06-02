@@ -11,59 +11,21 @@
 
 import os
 
-
-
+#Not currently needed. We load a saved version of the whole model.
+#We would need this if we switched to loading weights
 # ~ from models import currentBestModel
 
+CLASS_NAMES_LIST_INT = []
+CLASS_NAMES_LIST_STR = []
 
-#Current plan:
-#start with making the sorting function work. 
-#Add the funtion to the run button with default folder values for testing.
-
-#Then:
-#Open up a splash screen when user clicks on the exe
-#Load up the imports required
-#delete the splash screen with gtk.clear or something.
-#load up the actual program window
-
-#In the main window, use the file paths as the inputs to the sorting function.
-
-
-CLASS_BOBCAT = 0
-CLASS_COYOTE = 1
-CLASS_DEER = 2
-CLASS_ELK = 3
-CLASS_HUMAN = 4
-CLASS_NOT_INTERESTING = 5
-CLASS_RACCOON = 6
-CLASS_WEASEL = 7
-
-CLASS_BOBCAT_STRING = "bobcat"
-CLASS_COYOTE_STRING = "coyote"
-CLASS_DEER_STRING = "deer"
-CLASS_ELK_STRING = "elk"
-CLASS_HUMAN_STRING = "human"
-CLASS_RACCOON_STRING = "raccoon"
-CLASS_WEASEL_STRING = "weasel"
-CLASS_NOT_INTERESTING_STRING = "not"
-
-CLASS_NAMES_LIST_INT = [CLASS_BOBCAT, CLASS_COYOTE, CLASS_DEER, CLASS_ELK, CLASS_HUMAN, CLASS_NOT_INTERESTING, CLASS_RACCOON, CLASS_WEASEL]
-CLASS_NAMES_LIST_STR = [CLASS_BOBCAT_STRING, CLASS_COYOTE_STRING, CLASS_DEER_STRING, CLASS_ELK_STRING, CLASS_HUMAN_STRING, CLASS_NOT_INTERESTING_STRING, CLASS_RACCOON_STRING, CLASS_WEASEL_STRING]
-
-
-## We really should make a config file so that we don't need all these globals. ##
-IMG_WIDTH = 100
-IMG_HEIGHT = 100
-IMG_CHANNELS = 3
+IMG_WIDTH = None
+IMG_HEIGHT = None
+IMG_CHANNELS = None
 IMG_SHAPE_TUPPLE = (IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS)
-BATCH_SIZE = 32 #Same as tensorflow default.
+BATCH_SIZE = None
+CHECKPOINT_FOLDER = None
 
-CHECKPOINT_FOLDER = os.path.normpath("./checkpoint/")
-print("Checkpoint folder: " + CHECKPOINT_FOLDER)
-
-#Testing print
-PRESENT_DIRECTORY = os.path.normpath(os.path.dirname(__file__) )
-print("Present directory: " + PRESENT_DIRECTORY)
+DEBUG_MODE = True
 
 
 def sortAnimalsIntoFolders(sourceStr, destStr):
@@ -73,11 +35,13 @@ def sortAnimalsIntoFolders(sourceStr, destStr):
 	settingsDict = getSettingsFromFile(settingsFileName)
 	updateGlobalsFromSettings(settingsDict)
 	
-	print("Settings retrieved from " + settingsFileName)
-	print("IMG_WIDTH: " + str(IMG_WIDTH))
-	print("IMG_HEIGHT: " + str(IMG_HEIGHT))
-	print("IMG_CHANNELS: " + str(IMG_CHANNELS))
-	print("CHECKPOINT_FOLDER: " + str(CHECKPOINT_FOLDER))
+	if DEBUG_MODE:
+		print("Settings retrieved from " + settingsFileName)
+		print("IMG_WIDTH: " + str(IMG_WIDTH))
+		print("IMG_HEIGHT: " + str(IMG_HEIGHT))
+		print("IMG_CHANNELS: " + str(IMG_CHANNELS))
+		print("BATCH_SIZE: " + str(BATCH_SIZE))
+		print("CHECKPOINT_FOLDER: " + str(CHECKPOINT_FOLDER))
 	
 	print("Source dir: " + str(sourceStr))
 	print("Destenation dir: " + str(destStr))
@@ -121,7 +85,6 @@ def sortAnimalsIntoFolders(sourceStr, destStr):
 	predictionsArray = theModel.predict( \
 			images_ds,
 			verbose = 1,
-			# ~ steps = 2, #only predict two batches of 32 pictures to test faster.
 			)
 	elapsedTime = time.time() - startTime
 	print(str(predictionsArray))
@@ -150,6 +113,11 @@ def getSettingsFromFile(settingsFileName):
 		name, value = thing.split("=")
 		settingsDict.update({name : value})
 	
+	if DEBUG_MODE:
+		for thing in settingsDict:
+			print(str(thing) + ": ", end="")
+			print(settingsDict[thing])
+	
 	return settingsDict
 
 
@@ -170,7 +138,34 @@ def updateGlobalsFromSettings(settingsDict):
 	global BATCH_SIZE
 	BATCH_SIZE = int(settingsDict["BATCH_SIZE"])
 	
-
+	#parse the class list
+	rawClassNamesStr = settingsDict["classNames"]
+	splitClassNamesList = rawClassNamesStr.split(",")
+	
+	global CLASS_NAMES_LIST_STR
+	CLASS_NAMES_LIST_STR = splitClassNamesList
+	
+	#Not sure what I was thinking way back when I made CLASS_NAMES_LIST_INT in the loader haha.
+	# ~ intsListLol = [x for x in range(len(splitClassNamesList))] #A little roundabout
+	intsListLol = range(len(splitClassNamesList)) #Apparently equivalent.
+	global CLASS_NAMES_LIST_INT
+	CLASS_NAMES_LIST_INT = intsListLol
+	
+	if DEBUG_MODE:
+		print("rawclassnamesstr: " + str(rawClassNamesStr))
+		print("splitClassNamesList: " + str(splitClassNamesList))
+		print("CLASS_NAMES_LIST_INT: " + str(CLASS_NAMES_LIST_INT))
+		for thing in CLASS_NAMES_LIST_INT:
+			print(thing)
+			
+		print("CLASS_NAMES_LIST_STR: " + str(CLASS_NAMES_LIST_STR))
+		for thing in CLASS_NAMES_LIST_STR:
+			print(thing)
+		
+		testBoi = range(100, 0, -1)
+		print("testboi: " + str(testBoi))
+		print("now tryina get just 5...")
+		print("testBoi[5]: " + str(testBoi[5]))
 
 
 def normalizeAllNames(originalFullNames):

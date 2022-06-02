@@ -1,14 +1,8 @@
 Command that works (Linux):
 pyinstaller sorter-gui.py --windowed --add-data="settings.ini:." --add-data="checkpoint:checkpoint"
+
 (Windows): Windows uses semicolons; for path separators instead of colons:
 pyinstaller sorter-gui.py --windowed --add-data="settings.ini;." --add-data="checkpoint;checkpoint"
-
-To make pyinstaller work correctly, use the --windowed flag on the script
-that you want compiled:
-
-pyinstaller sorter-gui.py --windowed
-pyinstaller animal-gui.py --windowed
-pyinstaller cmdsorting.py
 
 --windowed 
 	hides the terminal output window. Output will still show if you run
@@ -19,11 +13,15 @@ pyinstaller cmdsorting.py
 	long time to load because it has to extract all the files to a
 	temporary folder. This takes especially long on windows.
 
+--add-data=
+	Include a file or folder in the output files. The syntax is:
+	
+		"sourceName:destinationFolder"
+	
+	So "checkpoint:." would take the files inside the checkpoint folder
+	and scatter them all into the base directory of the output.
+
 The output will be a folder named sorter-gui in a folder called dist.
-For the gtk version, you need to copy the .glade file into the
-dist/animal-gui/ folder. Also copy any other resources that the program
-uses, like pictures. All versions need a checkpoint folder in the
-executable's directory that contains a saved tensorflow model.
 
 To complete the installation, we will need to make a windows script that
 makes a link to the executable so that the users do not need to poke

@@ -1,10 +1,17 @@
 Animal Crossing GUI
 
-This is the gui repository for the Animal Crossing project. This program will take pictures in a folder and decide what kind of animal the picture is of. It will then copy the original images into sorted folders.
+This is the gui repository for the Animal Crossing project. This program
+will take pictures in a folder and decide what kind of animal the
+picture is of. It will then copy the original images into sorted
+folders.
 
-cmdsorting.py is a standalone terminal / command prompt only version of the program.
+cmdsorting.py is a standalone terminal / command prompt only version of
+the program.
 
 TODO:
+
+Make a script that creates a Windows shortcut to the exe file and place
+it on the user's desktop or start menu.
 
 Beutification
 
