@@ -13,6 +13,10 @@ sorter-gui:
 #sorter-gui:
 #	pyinstaller sorter-gui.py --windowed --add-data="settings.ini;." --add-data="checkpoint;checkpoint"
 
+cmd:
+	pyinstaller cmdsorting.py --distpath=cmddist --workpath=cmdbuild --add-data="settings.ini:." --add-data="checkpoint:checkpoint"
+
+
 
 #This will not work on windows.
 .PHONY: clean

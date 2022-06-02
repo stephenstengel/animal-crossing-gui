@@ -6,6 +6,9 @@
 #  
 # 
 
+import os
+import sys
+
 from AnimalSorter import sortAnimalsIntoFolders
 
 def main(args):
@@ -24,26 +27,45 @@ def checkArgs(args):
 	firstStr, secondStr = None, None
 	if argslen == 1:
 		print("No input. Using manual mode.")
-		# ~ firstStr, secondStr = askForInput()
-	if argslen == 3:
+		firstStr, secondStr = askForInput()
+	if argslen == 2 and args[1] == "tux":
+		printTux()
+		sys.exit(99)
+	elif argslen == 3:
 		firstStr, secondStr = args[1], args[2]
-	if firstStr != None and secondStr != None:
-		print("Input folder: " + str(firstStr) + "\n" 
-				+ "Output folder: " + str(secondStr) )
-	# ~ askIfCorrect()
-	#while loop to keep asking for the input and output folders until the user types them correctly.
-	
-	if argslen == 2 or argslen > 3:
-		pass
+	elif argslen > 3:
+		print("Bad input")
 		#print the helpfile and exit
-		exit(2)
+		sys.exit(2)
 	
 	if firstStr is None or secondStr is None:
-		print("Testing exit!")
-		print("a string is still none!")
-		exit(1)
+		print("a folder is still missing!")
+		sys.exit(1)
+
+	firstStr = os.path.normpath(firstStr)
+	secondStr = os.path.normpath(secondStr)
+
+	if firstStr != None and secondStr != None:
+		print("Input folder: " + str(firstStr) + "\n" \
+				+ "Output folder: " + str(secondStr) )
 
 	return firstStr, secondStr
+
+
+def askForInput():
+	print("Enter the relative path of the input pictures folder...")
+	inStr = input()
+	print("Enter the relative path of where you would like the sorted pictures to be saved...")
+	outStr = input()
+	
+	return inStr, outStr
+
+
+def printTux():
+	with open("tux.ascii", "r") as tuxFile:
+		for line in tuxFile:
+			print(line, end = "")
+		print()
 
 if __name__ == '__main__':
 	import sys

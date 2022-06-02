@@ -8,6 +8,10 @@ folders.
 cmdsorting.py is a standalone terminal / command prompt only version of
 the program.
 
+On mac and linux, you can compile the pyinstaller exe version of the
+program by typing "make" in a terminal. You can compile the command line
+only version by typing "make cmd".
+
 TODO:
 
 Make a script that creates a Windows shortcut to the exe file and place
